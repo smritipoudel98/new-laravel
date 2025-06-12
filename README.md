@@ -1,61 +1,100 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🧾 Laravel To-Do List App (Dockerized)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a simple Laravel To-Do List application running in a Docker environment with Apache, MySQL.
 
-## About Laravel
+## 🚀 Features:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   Laravel 12
+-   Apache server (via Docker)
+-   MySQL 8.0.40 database
+-   Dockerized development setup
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🧱 Requirements:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-   [Docker](https://www.docker.com/)
+-   [Docker Compose](https://docs.docker.com/compose/)
+-   Laravel installed (already included in this project)
 
-## Learning Laravel
+## ⚙️ Installation & Setup:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**Clone the project**
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+git clone https://github.com/smritipoudel98/new-laravel.git
+cd new-laravel
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## ⚙️ Docker Setup:
 
-## Laravel Sponsors
+-Create Dockerfile and docker-compose.yml
+--Dockerfile::-dockerimage used(baseimage:PHP 8.2.12 + Apache)
+-php extensions installed(extensions:`pdo`, `pdo_mysql`, `mbstring`, `gd`)
+-Apache `mod_rewrite` enabled(Required for Laravel’s routing)
+[It’s an Apache module used for URL rewriting.]
+-Laravel handles routing via public/index.php
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+     --docker-compose.yml::- 🔧 1. app (Laravel + Apache)
+     Builds from the custom Dockerfile in your project root.
 
-### Premium Partners
+                            Exposes port 8000 on your machine → Laravel app available at http://   localhost:8000.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+                            Mounts the current project directory into the container (/var/www/html).
 
-## Contributing
+                            Depends on the MySQL service to ensure it starts after the database is ready.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+                            Environment Variable:
+                            DB_HOST=mysql — tells Laravel to connect to the mysql service defined below.
 
-## Code of Conduct
+                      🐬 2. mysql (Database)
+                           Uses the official MySQL 5.7 image.
+                           Exposes port 3306 to the host (so you can connect using tools like phpMyAdmin or DBeaver).
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+                          Environment Variables:
+                          MYSQL_DATABASE=new_laravel — creates this database at startup.
+                          MYSQL_ROOT_PASSWORD=root — sets the root password to root.
 
-## Security Vulnerabilities
+                          Volumes:
+                          Persists database data in a Docker volume (mysql_data) even when the container is stopped or rebuilt.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+🧪 Running the Project with Docker:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Step 1: Build and start the containers:-
+docker-compose up --build
+
+       -This command builds your Docker images (from the Dockerfile) and starts the containers defined in docker-compose.yml.
+
+       -The app service runs your Laravel application.
+
+       -The mysql service runs the MySQL database.
+
+Step 2: Access the Laravel container shell:-
+docker exec -it todo-lists bash
+
+       -This opens an interactive shell inside your Laravel app container (todo-lists is the container name).
+
+       -You can run Laravel Artisan and Composer commands here.(php artisan migrate)
+
+Step 3: Set up Laravel inside the container:-
+composer install
+php artisan key:generate
+php artisan migrate
+
+    -composer install: installs PHP dependencies.
+    -php artisan key:generate: generates the application key.
+    -php artisan migrate: creates the database tables.
+
+Step 4: Access your application and database:-
+Laravel app: http://localhost:8000
+
+🧯 Troubleshooting & Docker Commands:
+
+docker-compose down :Stop and remove all running containers
+docker-compose down -v :Stop and remove containers and delete all volumes (⚠️ deletes MySQL data)
+docker ps :List all currently running containers
+docker-compose logs :View logs from all services (helpful for debugging issues)
+
+After fixing errors in your Dockerfile or .env, it's a good idea to:
+docker-compose down -v
+docker-compose up --build
