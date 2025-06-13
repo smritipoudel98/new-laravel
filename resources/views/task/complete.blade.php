@@ -24,7 +24,7 @@
             </td>
             <td>
                 @if(!$task->completed)
-                    <a href="{{ route('/task', $task->id) }}" class="btn btn-success btn-sm">Mark Complete</a>
+                    <a href="{{ route('task.index', $task->id) }}" class="btn btn-success btn-sm">Mark Complete</a>
                 @endif
             </td>
         </tr>
