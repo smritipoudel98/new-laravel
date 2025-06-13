@@ -4,9 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Middleware;
 use App\Http\Controllers\TaskController;
 
-Route::get('/', function () {
-    return view('task.index');
-});
+Route::get('/', [TaskController::class, 'index']);
+
 
 Route::get('/task/smriti', [TaskController::class, 'smritiMethod'])->name('task.smriti');
 Route::get('/task', [TaskController::class, 'index'])->name('task.index');
